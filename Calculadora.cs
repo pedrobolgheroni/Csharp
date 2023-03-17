@@ -1,58 +1,98 @@
-double num1 = 0;
-double num2 = 0;
-char op;
-
-do {
-Console.WriteLine("Calculadora Console em C#\r");
-Console.WriteLine("--------------------------\n");
-
-Console.WriteLine("Digite um número, e pressione Enter");
-num1 = Convert.ToDouble(Console.ReadLine());
-
-Console.WriteLine("Digite outro número, e pressione Enter");
-num2 = Convert.ToDouble(Console.ReadLine());
-
-Console.WriteLine("Escolha uma opção: ");
-
-Console.WriteLine("\ta - Soma");
-
-Console.WriteLine("\ts - Subtração");
-
-Console.WriteLine("\tm - Multiplicação");
-
-Console.WriteLine("\td - Divisão");
-
-Console.Write("Qual sua opção? ");
-
-switch(Console.ReadLine())
+class Calculadora 
 {
-  case "a": 
-   Console.WriteLine($"\nSeu resultado: {num1} + {num2} = " + (num1 + num2));
-   break;
+    public static double Operacao (double num1, double num2, string opcao) 
+    {
+       double resultado = double.NaN; //not-a-number 
+       switch(opcao)
+      {
+         case "a": 
+            resultado = num1 + num2;
+            break;
 
-  case "s": 
-   Console.WriteLine($"Seu resultado: {num1} - {num2} = " + (num1 - num2));
-   break;
+         case "s": 
+            resultado = num1 - num2; 
+            break;
 
-  case "m": 
-   Console.WriteLine($"Seu resultado: {num1} * {num2} = " + (num1 * num2));
-   break;
+         case "m": 
+            resultado = num1 * num2; 
+            break;
 
-  case "d": 
-   while (num2 == 0)
-   {
-    Console.WriteLine("Erro - Divisão por zero \nDigite outro número: ");
-    num2 = Convert.ToDouble(Console.ReadLine());
+         case "d": 
+            if(num2 != 0) 
+            resultado = num1/num2; 
+         break;
+
+         default: 
+            Console.WriteLine("Opção Inválida"); 
+            break;
+         } 
+         return resultado; 
+      }
+}
+
+class Programa
+{ 
+   static void Main(string[] args) 
+   { 
+      bool fimPrograma = false; 
+      string n1 = ""; 
+      string n2 = ""; 
+      double num1 = 0; 
+      double num2 = 0; 
+      double resultado = 0; 
+      string opcao;
+
+      Console.WriteLine("Calculadora Console em C#\r"); 
+      Console.WriteLine("-------------------------"); 
+      
+      while (!fimPrograma) 
+      { 
+         Console.WriteLine("Digite um número, e pressione Enter ");
+         n1 = Console.ReadLine();
+
+         while (!double.TryParse(n1, out num1)) // TryParse trata String, verifica se é um valor númerico e converte, ou seja, entra como String e sai como número. Se o retorno for não númerico retornará NaN
+         { 
+            Console.Write("Número Inválido. Digite um número válido: "); 
+            n1 = Console.ReadLine();
+         }
+
+         Console.WriteLine("Digite outro número, e pressione Enter "); 
+         n2 = Console.ReadLine();
+
+         while (!double.TryParse(n2, out num2)) 
+         { 
+            Console.WriteLine("Número Inválido. Digite um número válido: "); 
+            n2 = Console.ReadLine();
+         }
+
+         Console.WriteLine("Escolha uma opção da lista seguinte:"); 
+         Console.WriteLine("\ta - Soma"); 
+         Console.WriteLine("\ts - Subtração"); 
+         Console.WriteLine("\tm - Multiplicação"); 
+         Console.WriteLine("\td - Divisão"); 
+         Console.Write("Qual sua opção? "); 
+         opcao = Console.ReadLine();
+
+         try 
+         { 
+            resultado = Calculadora.Operacao(num1, num2, opcao); 
+            if (double.IsNaN(resultado)) 
+            { 
+               Console.WriteLine("Esta operação resultará em um erro matemático.\n"); 
+            }
+            else 
+               Console.WriteLine("Seu resultado é: {0:0.####}\n", resultado); 
+         } 
+         catch(Exception e) 
+         { 
+            Console.WriteLine("Ocorreu uma exceção.\n Detalhes: "+e.Message); 
+         }
+
+         Console.Write("Pressione 'n' para fechar a aplicação, ou pressione qualquer tecla para continuar: "); 
+         if (Console.ReadLine() == "n") 
+            fimPrograma = true; 
+         Console.WriteLine("\n"); 
+      } 
+      return; 
    }
-   Console.WriteLine($"Seu resultado: {num1} / {num2} = " + (num1 / num2));
-   break;   
-
-  default: Console.WriteLine("Opção inválida!");
-  break;
 }
-
-Console.Write("\nDeseja continuar: \ns - sim \nn - não \n");
-op = Console.ReadKey().KeyChar;
-Console.WriteLine("");
-}
-while (op == 's');
